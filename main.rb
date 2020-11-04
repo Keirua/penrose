@@ -42,20 +42,26 @@ N.times do |i|
 end
 
 def line(x1, y1, x2, y2, stroke_color)
-  "<line x1=\"#{x1}\" y1=\"#{y1}\" x2=\"#{x2}\" y2=\"#{y2}\" stroke=\"#{stroke_color}\" />\n"
+  "<line x1=\"#{x1}\" y1=\"#{y1}\" x2=\"#{x2}\" y2=\"#{y2}\" stroke=\"#{stroke_color}\" stroke-width=\"1%\" />\n"
+end
+
+def triangle(a, b, c, fill_color)
+  "<polygon points=\"#{a.x},#{a.y} #{b.x},#{b.y} #{c.x},#{c.y}\" fill=\"#{fill_color}\" />\n"
 end
 
 img = "<svg viewBox=\"0 0 #{IMG_WIDTH} #{IMG_HEIGHT}\" xmlns=\"http://www.w3.org/2000/svg\">\n"
+
+odd_fill_color = '#FF6060'
+stroke_color = '#6060FF'
 
 triangles.each do |t|
   a = Point.transform(t.a)
   b = Point.transform(t.b)
   c = Point.transform(t.c)
 
-  img << line(a.x, a.y, b.x, b.y, 'red')
-  img << line(b.x, b.y, c.x, c.y, 'green')
-  img << line(c.x, c.y, a.x, a.y, 'blue')
-
+  img << triangle(a, b, c, odd_fill_color)
+  img << line(a.x, a.y, b.x, b.y, stroke_color)
+  img << line(c.x, c.y, a.x, a.y, stroke_color)
 end
 
 img << "</svg>"
