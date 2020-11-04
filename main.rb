@@ -14,6 +14,10 @@ class Point
   def self.transform(p)
     Point.new((IMG_WIDTH/2 + p.x * 0.8 * IMG_WIDTH/2).to_i, (IMG_HEIGHT/2 + p.y * 0.8 * IMG_HEIGHT/2).to_i)
   end
+
+  def self.lerp(a, b, alpha)
+    Point.new(a.x + (b.x - a.x)*alpha, a.y + (b.y - a.y)*alpha)
+  end
 end
 
 class Triangle
@@ -28,21 +32,20 @@ class Triangle
   end
 
   def subdivide()
-    # result = []
-    # if color == :even
-    #     # Subdivide red triangle
-    #     P = A + (B - A) / goldenRatio
-    #     result += [(0, C, P, B), (1, P, C, A)]
-    # else
-    #     # Subdivide blue triangle
-    #     Q = B + (A - B) / goldenRatio
-    #     R = B + (C - B) / goldenRatio
-    #     result += [(1, R, C, A), (1, Q, R, B), (0, R, Q, A)]
-    # return result
+    result = []
+    if color == :red
+      p = Point.lerp(@a, @b, 1/GOLDEN_RATIO)
+      result << [Triangle.new(@c, p, @b, :red), Triangle.new(p, @c, @a, :blue)]
+    else
+      q = Point.lerp(@b, @a, 1/GOLDEN_RATIO)
+      r = Point.lerp(@b, @c, 1/GOLDEN_RATIO)
+      result << [Triangle.new(r, @c, @a, :blue), Triangle.new(q, r, @b, :blue), Triangle.new(r, q, @a, :red)]
+    end
+    return result
   end
 end
 
-triangles = []
+initial_triangles = []
 N = 10
 N.times do |i|
   b_complex = Complex.polar(1, ((2*i - 1)*Math::PI/N))
@@ -53,7 +56,12 @@ N.times do |i|
   b_point = Point.new(b_complex.real, b_complex.imaginary)
   c_point = Point.new(c_complex.real, c_complex.imaginary)
 
-  triangles << Triangle.new(Point.new, b_point, c_point, :red)
+  initial_triangles << Triangle.new(Point.new, b_point, c_point, :red)
+end
+
+triangles = initial_triangles
+7.times do
+  triangles = triangles.map { |t| t.subdivide }.flatten
 end
 
 def line(a, b, stroke_color)
@@ -64,17 +72,17 @@ def triangle(a, b, c, fill_color)
   "<polygon points=\"#{a.x},#{a.y} #{b.x},#{b.y} #{c.x},#{c.y}\" fill=\"#{fill_color}\" />\n"
 end
 
+red_fill_color = '#FF6060'
+blue_fill_color = '#6060FF'
+stroke_color = '#404040'
 img = "<svg viewBox=\"0 0 #{IMG_WIDTH} #{IMG_HEIGHT}\" xmlns=\"http://www.w3.org/2000/svg\">\n"
-
-odd_fill_color = '#FF6060'
-stroke_color = '#6060FF'
 
 triangles.each do |t|
   a = Point.transform(t.a)
   b = Point.transform(t.b)
   c = Point.transform(t.c)
 
-  img << triangle(a, b, c, odd_fill_color)
+  img << triangle(a, b, c, t.color == :red ? red_fill_color : blue_fill_color)
   img << line(a, b, stroke_color)
   img << line(c, a, stroke_color)
 end
