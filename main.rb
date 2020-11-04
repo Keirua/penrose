@@ -1,6 +1,8 @@
 IMG_WIDTH = 1000
 IMG_HEIGHT = 1000
 
+GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2.0
+
 class Point
   attr_accessor :x, :y
 
@@ -25,6 +27,19 @@ class Triangle
     @color = color
   end
 
+  def subdivide()
+    # result = []
+    # if color == :even
+    #     # Subdivide red triangle
+    #     P = A + (B - A) / goldenRatio
+    #     result += [(0, C, P, B), (1, P, C, A)]
+    # else
+    #     # Subdivide blue triangle
+    #     Q = B + (A - B) / goldenRatio
+    #     R = B + (C - B) / goldenRatio
+    #     result += [(1, R, C, A), (1, Q, R, B), (0, R, Q, A)]
+    # return result
+  end
 end
 
 triangles = []
@@ -41,8 +56,8 @@ N.times do |i|
   triangles << Triangle.new(Point.new, b_point, c_point, :red)
 end
 
-def line(x1, y1, x2, y2, stroke_color)
-  "<line x1=\"#{x1}\" y1=\"#{y1}\" x2=\"#{x2}\" y2=\"#{y2}\" stroke=\"#{stroke_color}\" stroke-width=\"1%\" />\n"
+def line(a, b, stroke_color)
+  "<line x1=\"#{a.x}\" y1=\"#{a.y}\" x2=\"#{b.x}\" y2=\"#{b.y}\" stroke=\"#{stroke_color}\" />\n"
 end
 
 def triangle(a, b, c, fill_color)
@@ -60,8 +75,8 @@ triangles.each do |t|
   c = Point.transform(t.c)
 
   img << triangle(a, b, c, odd_fill_color)
-  img << line(a.x, a.y, b.x, b.y, stroke_color)
-  img << line(c.x, c.y, a.x, a.y, stroke_color)
+  img << line(a, b, stroke_color)
+  img << line(c, a, stroke_color)
 end
 
 img << "</svg>"
