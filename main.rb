@@ -1,6 +1,15 @@
 IMG_WIDTH = 1000
 IMG_HEIGHT = 1000
 
+if ARGV.count < 2
+  puts("You need to provide the depth (1 to 10), and the number of subdivision (10 for penrose)")
+  exit
+else
+  depth = ARGV[0].to_i
+  nb_subdivisions = ARGV[1].to_i
+  puts depth, nb_subdivisions
+end
+
 GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2.0
 
 class Point
@@ -46,21 +55,21 @@ class Triangle
 end
 
 initial_triangles = []
-N = 10
-N.times do |i|
-  b_complex = Complex.polar(1, ((2*i - 1)*Math::PI/N))
-  c_complex = Complex.polar(1, ((2*i + 1)*Math::PI/N))
+nb_subdivisions.times do |i|
+  b_complex = Complex.polar(1, ((2*i - 1)*Math::PI/nb_subdivisions))
+  c_complex = Complex.polar(1, ((2*i + 1)*Math::PI/nb_subdivisions))
 
   b_complex, c_complex = c_complex, b_complex if i.even?
 
   b_point = Point.new(b_complex.real, b_complex.imaginary)
   c_point = Point.new(c_complex.real, c_complex.imaginary)
 
-  initial_triangles << Triangle.new(Point.new, b_point, c_point, :red)
+  initial_triangles << Triangle.new(Point.new, b_point, c_point, :blue)
 end
 
 triangles = initial_triangles
-7.times do
+
+depth.times do
   triangles = triangles.map { |t| t.subdivide }.flatten
 end
 
