@@ -1,13 +1,15 @@
 IMG_WIDTH = 1000
 IMG_HEIGHT = 1000
 
-if ARGV.count < 2
-  puts("You need to provide the depth (1 to 10), and the number of subdivision (10 for penrose)")
-  exit
+if ARGV.count < 3
+  puts("You can provide the depth (1 to 10, default 5), the number of subdivisions of the circle (10 for penrose), and the start color (red or blue, default red)")
+  depth = 5
+  nb_triangles = 10
+  start_color = :red
 else
   depth = ARGV[0].to_i
-  nb_subdivisions = ARGV[1].to_i
-  puts depth, nb_subdivisions
+  nb_triangles = ARGV[1].to_i
+  start_color = ARGV[2].to_sym
 end
 
 GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2.0
@@ -55,21 +57,21 @@ class Triangle
 end
 
 initial_triangles = []
-nb_subdivisions.times do |i|
-  b_complex = Complex.polar(1, ((2*i - 1)*Math::PI/nb_subdivisions))
-  c_complex = Complex.polar(1, ((2*i + 1)*Math::PI/nb_subdivisions))
+nb_triangles.times do |i|
+  b_complex = Complex.polar(1, ((2*i - 1)*Math::PI/10))
+  c_complex = Complex.polar(1, ((2*i + 1)*Math::PI/10))
 
   b_complex, c_complex = c_complex, b_complex if i.even?
 
   b_point = Point.new(b_complex.real, b_complex.imaginary)
   c_point = Point.new(c_complex.real, c_complex.imaginary)
 
-  initial_triangles << Triangle.new(Point.new, b_point, c_point, :blue)
+  initial_triangles << Triangle.new(Point.new, b_point, c_point, start_color)
 end
 
 triangles = initial_triangles
 
-depth.times do
+(depth-1).times do
   triangles = triangles.map { |t| t.subdivide }.flatten
 end
 
