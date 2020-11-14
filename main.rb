@@ -2,7 +2,6 @@ IMG_WIDTH = 1000
 IMG_HEIGHT = 1000
 
 if ARGV.count < 3
-  puts("You can provide the depth (1 to 10, default 5), the number of subdivisions of the circle (10 for penrose), and the start color (red or blue, default red)")
   depth = 5
   nb_triangles = 10
   start_color = :red
@@ -45,12 +44,12 @@ class Triangle
   def subdivide()
     result = []
     if color == :red
-      p = Point.lerp(@a, @b, 1/GOLDEN_RATIO)
-      result << [Triangle.new(@c, p, @b, :red), Triangle.new(p, @c, @a, :blue)]
+      p = Point.lerp(a, b, 1/GOLDEN_RATIO)
+      result << [Triangle.new(c, p, b, :red), Triangle.new(p, c, a, :blue)]
     else
-      q = Point.lerp(@b, @a, 1/GOLDEN_RATIO)
-      r = Point.lerp(@b, @c, 1/GOLDEN_RATIO)
-      result << [Triangle.new(r, @c, @a, :blue), Triangle.new(q, r, @b, :blue), Triangle.new(r, q, @a, :red)]
+      q = Point.lerp(b, a, 1/GOLDEN_RATIO)
+      r = Point.lerp(b, c, 1/GOLDEN_RATIO)
+      result << [Triangle.new(r, c, a, :blue), Triangle.new(q, r, b, :blue), Triangle.new(r, q, a, :red)]
     end
     return result
   end
