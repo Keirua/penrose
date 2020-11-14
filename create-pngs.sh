@@ -9,6 +9,9 @@ convert output/svg/penrose6.svg output/png/penrose6.png
 convert output/svg/penrose7.svg output/png/penrose7.png 
 convert output/svg/penrose8.svg output/png/penrose8.png 
 
+convert output/blue/blue-0.svg output/blue/blue-0.png 
+convert output/blue/blue-1.svg output/blue/blue-1.png 
+
 convert output/transformation/penrose0-blue.svg output/transformation/penrose0-blue.png
 convert output/transformation/penrose0-red.svg output/transformation/penrose0-red.png
 convert output/transformation/penrose1-blue.svg output/transformation/penrose1-blue.png
